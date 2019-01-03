@@ -1,4 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using Kiwipedia2._0.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(Kiwipedia2._0.Startup))]
@@ -9,6 +12,60 @@ namespace Kiwipedia2._0
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            // creez un cont de admin si rolurile
+            createAdminUserAndApplicationRoles();
+        }
+
+        private void createAdminUserAndApplicationRoles()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
+            // stabilirea rolurilor aplicatiei
+            // adaug rolul de administrator
+            if (!roleManager.RoleExists("Administrator"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Administrator";
+                roleManager.Create(role);
+
+                // se adauga un admin
+                var user = new ApplicationUser();
+                user.UserName = "admin";
+                user.Email = "admin@admin.com";
+                var adminCreated = UserManager.Create(user,"Admin1");
+
+                if (adminCreated.Succeeded)
+                {
+                    UserManager.AddToRole(user.Id, "Administrator");
+                }
+            }
+
+            // adaug rolul de editor (moderator)
+            if(!roleManager.RoleExists("Editor"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Editor";
+                roleManager.Create(role);
+            }
+
+            // adaug rolul de utilizator (inregistrat)
+            if (!roleManager.RoleExists("User"))
+            {
+                var role = new IdentityRole();
+                role.Name = "User";
+                roleManager.Create(role);
+            }
+
+            // adaug rolul de vizitator (utilizator neinregistrat)
+            if (!roleManager.RoleExists("Visitor"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Visitor";
+                roleManager.Create(role);
+            }
         }
     }
 }
