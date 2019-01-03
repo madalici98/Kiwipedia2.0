@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "Editare articol";
+}
+
+<h2>@ViewBag.Title</h2>
+<p>Afisare formular de editare student - cu datele vechi ale studentului</p>
+<form method="post" action="/Article/Edit/@ViewBag.id">
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    <button type="submit" class="btn btn-success">Modifica articolul</button>
+    <a class="btn btn-danger" href="/Article/Index" role="button" style="margin-left: 10%">Anulare</a>
+</form>
