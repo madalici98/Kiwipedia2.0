@@ -273,7 +273,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Article\DeleteMethod.cshtml" />
     <Content Include="Views\Article\Edit.cshtml" />
-    <Content Include="Views\Article\EditPostMethod.cshtml" />
+    <Content Include="Views\Article\EditPutMethod.cshtml" />
     <Content Include="Views\Article\Index.cshtml" />
     <Content Include="Views\Article\New.cshtml" />
     <Content Include="Views\Article\NewPostMethod.cshtml" />

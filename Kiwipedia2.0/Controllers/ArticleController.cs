@@ -53,8 +53,18 @@ namespace Kiwipedia.Controllers
         // GET: vrem sa editam un articol
         public ActionResult Edit(int id)
         {
-            ViewBag.id = id;
-            return View();
+            Article[] articles = GetArticles();
+
+            try
+            {
+                ViewBag.article = articles[id];
+                return View();
+            }
+            catch (Exception e)
+            {
+                ViewBag.errorMessage = e.Message;
+                return View("Error");
+            }
         }
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
