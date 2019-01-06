@@ -92,16 +92,16 @@ namespace Kiwipedia.Controllers
             {
                 Article article = new Article();
 
-                article.id = i;
-                article.created = DateTime.Now.AddMinutes(i);
+                article.id = i.ToString();
+                article.creationDate = DateTime.Now.AddMinutes(i);
                 article.creatorId = i.ToString();
 
                 ArticleVersion version = new ArticleVersion();
-                version.articleId = i;
-                version.articleVersionId = 1;
+                version.articleId = i.ToString();
+                version.versionId = "1";
                 version.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
-                version.created = DateTime.Now.AddMinutes(i);
-                version.creatorId = i.ToString();
+                version.creationDate = DateTime.Now.AddMinutes(i);
+                version.editorId = i.ToString();
 
                 article.currentVersionId = version;
                 articles[i] = article;
