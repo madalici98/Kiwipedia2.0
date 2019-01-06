@@ -1,24 +1,59 @@
-﻿@{
-    ViewBag.Title = "Articole";
-}
+﻿
+<h2>@ViewBag.title</h2>
 
-<h2>@ViewBag.Title</h2>
 
-<!-- <p>Am adaugat ceva in view</p> -->
-<a class="btn btn-success" href="/Article/New" role="button" style="margin-left: 60%">Adaugare articol</a>
+<nav class="navbar navbar-light bg-light">
+
+    
+    <form class="form-inline" action="@Url.Action("Search", "Article")" method="get">
+        <div class="btn-group">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Toate categoriile
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" style="color: black;" href="/Article/Index">Toate categoriile</a>
+                <div class="dropdown-divider"></div>
+
+                @foreach (var category in ViewBag.categories)
+            {
+                    <a class="dropdown-item" style="color: black;" href="/Article/Index/@category">@category</a>
+                    <div class="dropdown-divider"></div>
+                }
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Ordonati dupa
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" style="color: black;" href="/Article/Index/Sort/Old">Vechime</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" style="color: black;" href="/Article/Index/Sort/Alpha">Ordinea alfabetica</a>
+                <div class="dropdown-divider"></div>
+            </div>
+        </div>
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Cautare articol</button>
+        <a class="btn btn-success" href="/Article/New" role="button" style="margin-left: 15%">Adaugare articol</a>
+    </form>
+</nav>
+
 <br />
 
 @foreach (var article in ViewBag.articles)
 {
     <h1>@article.currentVersionId.title</h1>
-
-    <h3>Descriere</h3>
+    <br />
+    <a class="btn btn-outline-success" href="/Article/Index/@article.category" style="background-color: green; color: white;" role="button">@article.category</a>
+    <br />
     <img src=@article.currentVersionId.thumbnail width="100" style="float: left;"/>
     <p>@article.currentVersionId.description</p>
 
     <small>Data creare: @article.creationDate</small>
     <br />
     <small>Ultima actualizare: @article.currentVersionId.creationDate.ToString()</small>
+    <br />
     <br />
     <form method="post" action="/Article/Delete/@article.id">
         @Html.HttpMethodOverride(HttpVerbs.Delete)
