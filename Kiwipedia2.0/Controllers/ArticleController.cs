@@ -13,9 +13,7 @@ namespace Kiwipedia.Controllers
         public ActionResult Index()
         {
             Article[] articles = GetArticles();
-
             ViewBag.articles = articles;
-
             return View();
         }
 
@@ -23,7 +21,6 @@ namespace Kiwipedia.Controllers
         public ActionResult Show(int id)
         {
             Article[] articles = GetArticles();
-
             try
             {
                 ViewBag.article = articles[id];
@@ -82,7 +79,6 @@ namespace Kiwipedia.Controllers
             return View("DeleteMethod");
         }
 
-
         [NonAction]
         private Article[] GetArticles()             //il folosesc in loc de baza de date
         {
@@ -92,16 +88,16 @@ namespace Kiwipedia.Controllers
             {
                 Article article = new Article();
 
-                article.id = i;
-                article.created = DateTime.Now.AddMinutes(i);
+                article.id = i.ToString();
+                article.creationDate = DateTime.Now.AddMinutes(i);
                 article.creatorId = i.ToString();
 
                 ArticleVersion version = new ArticleVersion();
-                version.articleId = i;
-                version.articleVersionId = 1;
+                version.articleId = i.ToString();
+                version.versionId = 1.ToString();
                 version.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
-                version.created = DateTime.Now.AddMinutes(i);
-                version.creatorId = i.ToString();
+                version.creationDate = DateTime.Now.AddMinutes(i);
+                version.editorId = i.ToString();
 
                 article.currentVersionId = version;
                 articles[i] = article;

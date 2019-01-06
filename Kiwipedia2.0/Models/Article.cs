@@ -7,9 +7,9 @@ namespace Kiwipedia2._0.Models
 {
     public class Article
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public ArticleVersion currentVersionId { get; set; }  //deocamdata fac legatura directa iar terminam baza de date o sa fac cu id
-        public DateTime created { get; set; }
+        public DateTime creationDate { get; set; }
         public string creatorId { get; set; }
     }
 
