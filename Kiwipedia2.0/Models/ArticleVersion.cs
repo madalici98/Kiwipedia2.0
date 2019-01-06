@@ -8,7 +8,6 @@ namespace Kiwipedia2._0.Models
     public class ArticleVersion
     {
         public string versionId { set; get; }
-
         public string articleId { set; get; }
         public string editorId { set; get; }
         public string title { get; set; }
@@ -16,6 +15,5 @@ namespace Kiwipedia2._0.Models
         public string thumbnail { get; set; }
         public string content { get; set; }
         public DateTime creationDate { get; set; }
-
     }
 }

@@ -14,6 +14,18 @@ namespace Kiwipedia2._0
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Index",
+                url: "Article/Index/Sort/{type}",
+                defaults: new { controller = "Article", action = "Sort", type = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
+                name: "Sort",
+                url: "Article/Index/{category}",
+                defaults: new { controller = "Article", action = "Index", category = ""}
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
