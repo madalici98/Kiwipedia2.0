@@ -1,19 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
 namespace Kiwipedia2._0.Models
 {
     public class ArticleVersion
-    {
-        public string versionId { set; get; }
-        public string articleId { set; get; }
-        public string editorId { set; get; }
+    {   
+        [Key]
+        public Guid versionId { set; get; }
+        [Required]
+        public Guid articleId { set; get; }
+        public Guid editorId { set; get; } // a user
         public string title { get; set; }
         public string description { get; set; }
         public string thumbnail { get; set; }
         public string content { get; set; }
         public DateTime creationDate { get; set; }
+
+        public Article article;
+    }
+
+    public class ArticleVersionDBContext : DbContext
+    {
+        public ArticleVersionDBContext() : base("DBConnectionString") { }
+        public DbSet<ArticleVersion> ArticleVersions { get; set; }
     }
 }

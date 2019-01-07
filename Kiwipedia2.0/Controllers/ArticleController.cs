@@ -8,14 +8,37 @@ using System.Web.Mvc;
 namespace Kiwipedia.Controllers
 {
     public class ArticleController : Controller
-    {
+    {   
+        //conexiunea cu baza de date
+        private ArticleDBContext dbArticles = new ArticleDBContext();
+        private CategoryDBContext dbCategories = new CategoryDBContext();
+        //private ArticleVersionDBContext dbArticleVersion = new ArticleVersionDBContext();
+
+
         // GET: lista tuturor articolelor + filtru dupa categorii
-        public ActionResult Index(string category)
+        public ActionResult Index(string cat) // category
         {
-            Article[] articles = GetArticles();
+            /*
+            var categories = from category in dbCategories.Categories
+                             select category;
+            ViewBag.categories = categories;
+
+            if (cat == null)
+            {
+                var articles = dbArticles.Articles.Include("ArticleVersion");
+                ViewBag.articles = articles;
+                ViewBag.Title = "Toate articolele";
+                return View();
+            } else
+            {
+                return View("Error");
+            }*/
+
+
+            /*Article[] articles = GetArticles();
             List<string> categories = new List<string>();
 
-            foreach(Article article in articles)
+            foreach (Article article in articles)
             {
                 if (!categories.Contains(article.category))
                     categories.Add(article.category);
@@ -51,13 +74,27 @@ namespace Kiwipedia.Controllers
             }
 
             ViewBag.categories = categories;
+            return View();*/
+
+            ViewBag.articles = new List<Article>();
+            ViewBag.categories = new List<Category>();
             return View();
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
         public ActionResult Sort(string type)
-        {
-            Article[] articles = GetArticles();
+        {   
+            if (type == "Old")
+            {
+                var articles = from article in dbArticles.Articles
+                               select article;
+
+            } else
+            {
+
+            }
+
+            /*Article[] articles = GetArticles();
             List<string> categories = new List<string>();
 
             foreach (Article article in articles)
@@ -82,13 +119,15 @@ namespace Kiwipedia.Controllers
 
             ViewBag.articles = sortedArticles;
             ViewBag.categories = categories;
+            return View("Index");*/
+
             return View("Index");
         }
-        
+
         // GET: lista articolelor care au in denumire searchString-ul dat
         public ActionResult Search(string search)
         {
-            Article[] articles = GetArticles();
+            /*Article[] articles = GetArticles();
             List<string> categories = new List<string>();
 
             foreach (Article article in articles)
@@ -102,7 +141,7 @@ namespace Kiwipedia.Controllers
             List<Article> searchedArticles = new List<Article>();
             if (!String.IsNullOrEmpty(search))
             {
-                foreach(Article article in articles)
+                foreach (Article article in articles)
                 {
                     if (article.currentVersionId.title.Contains(search))
                         searchedArticles.Add(article);
@@ -116,13 +155,15 @@ namespace Kiwipedia.Controllers
 
             ViewBag.articles = searchedArticles;
             ViewBag.categories = categories;
+            return View("Index");*/
+
             return View("Index");
         }
 
         // GET: vizualizarea unui articol
-        public ActionResult Show(int id)
+        public ActionResult Show(int id) //asta ar trebui sa mearga asa
         {
-            Article[] articles = GetArticles();
+            /*Article[] articles = GetArticles();
 
             try
             {
@@ -133,7 +174,14 @@ namespace Kiwipedia.Controllers
             {
                 ViewBag.errorMessage = e.Message;
                 return View("Error");
-            }
+            }*/
+
+            Article article = dbArticles.Articles.Find(id);
+            ViewBag.article = article;
+            ArticleVersion articleVersion = dbArticles.ArticleVersions.Find(article.currentVersionId);
+            ViewBag.articleVersion = articleVersion;
+
+            return View();
         }
 
         // GET: afisam formularul de crearea a unui articol
@@ -153,7 +201,7 @@ namespace Kiwipedia.Controllers
         // GET: vrem sa editam un articol
         public ActionResult Edit(int id)
         {
-            Article[] articles = GetArticles();
+            /*Article[] articles = GetArticles();
 
             try
             {
@@ -164,7 +212,9 @@ namespace Kiwipedia.Controllers
             {
                 ViewBag.errorMessage = e.Message;
                 return View("Error");
-            }
+            }*/
+
+            return View();
         }
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
@@ -182,8 +232,7 @@ namespace Kiwipedia.Controllers
             return View("DeleteMethod");
         }
 
-
-        [NonAction]
+        /*[NonAction]
         private Article[] GetArticles()             //il folosesc in loc de baza de date
         {
             Article[] articles = new Article[4];
@@ -227,6 +276,6 @@ namespace Kiwipedia.Controllers
             articles[3].currentVersionId.description = "Despre pasarea feroce si inspaimantatoare dar in acelasi timp dragalasa si iubitoare. Descoperiti de ce se fac atat de multe ornamente cu imaginea lor!";
             articles[3].currentVersionId.content = "Bufnița este o denumire comună pentru păsările răpitoare de noapte din ordinul strigiforme (Strigiformes), care cuprinde buhele, cucuvelele, huhurezii, strigile și alte păsări răpitoare de noapte. Au un zbor silențios și un colorit protector, de obicei brun, cea ce le ajută la prinderea insectelor, a păsărilor și a mamiferelor mici. În repaus corpul lor are o poziție verticală. Bufnițele au ochi globuloși așezați frontal, cioc puternic, încovoiat, văz și auz foarte bine dezvoltate. Degetele sunt scurte, prevăzute cu gheare lungi, ascuțite și încovoiate. Au o lungime de 13-70 cm, în funcție de specie. Penele formează discuri faciale sau smocuri în jurul urechilor, fapt care le ajută să localizeze prada cu mare precizie prin reflectarea sunetului spre urechi. Ochii nu sunt mobili, ci fixați în orbite, în schimb își pot roti capul cu 180° (unele specii chiar cu 270°). Se hrănesc cu rozătoare sau insecte, pe care le vânează noaptea sau în crepuscul și pe care le înghit de obicei întregi. Cele mai mari atacă păsări și iepuri. Resturile de la hrană sunt eliminate sub formă de cocoloașe, ingluviile. Cuibăresc în scorburi, cuiburi vechi ale altor păsări, vizuini, găuri în maluri, fisuri în stânci, iar unele în mediul antropic, în preajma hambarelor, silozurilor, în cimitire etc. Ponta constă din 2-10 ouă albe și rotunde. Puii sunt nidicoli, acoperiți de regulă la ieșirea din ou cu un puf des. Sunt păsări folositoare, deoarece consumă rozătoare și insecte dăunătoare. Bufnițele sunt răspândite pe întreaga suprafață a pământului, mai puțin în Antarctica. În România au fost semnalate 12 specii de bufnițe, iar în Republica Moldova 8 specii. În dicționarele generale ale limbii române termenul de \"bufniță\" se referă numai la o singură specie - buhă (Bubo bubo), însă în literatura ornitologică românească termenul de \"bufniță\" este sinonim cu strigidă, adică este o denumire comună pentru toate speciile din ordinul strigiforme (Strigiformes).";
             return articles;
-        }
+        }*/
     }
 }

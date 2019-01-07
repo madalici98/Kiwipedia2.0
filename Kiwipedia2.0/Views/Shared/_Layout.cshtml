@@ -9,7 +9,7 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #ffffff;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -18,10 +18,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Kiwipedia", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <!-- @Html.ActionLink("Kiwipedia", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" }) -->
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li><a href="/Home/Index" style="background-image: url(/Content/App_Resources/Images/KiwipediaLogo.png); text-indent: -9999px; display: block; width: 20%;"></a></li>
                     <li><a href="/Article/Index">Articole</a></li>
                     <li><a href="/Home/Index" style="background-image: url(/Content/App_Resources/Images/Kiwipeda.jpg)"</li>
                     <li>@Html.ActionLink("Despre", "About", "Home")</li>
@@ -35,7 +36,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Kiwipedia</p>
         </footer>
     </div>
 
