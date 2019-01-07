@@ -20,12 +20,5 @@ namespace Kiwipedia2._0.Models
         public string content { get; set; }
         public DateTime creationDate { get; set; }
 
-        public Article article;
-    }
-
-    public class ArticleVersionDBContext : DbContext
-    {
-        public ArticleVersionDBContext() : base("DBConnectionString") { }
-        public DbSet<ArticleVersion> ArticleVersions { get; set; }
     }
 }

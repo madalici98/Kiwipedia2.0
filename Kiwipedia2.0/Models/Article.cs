@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -8,7 +9,8 @@ using System.Web;
 namespace Kiwipedia2._0.Models
 {
     public class Article
-    {   
+    {
+        
         [Key]
         public Guid id { get; set; }
         [Required]
@@ -18,15 +20,11 @@ namespace Kiwipedia2._0.Models
         public Guid creatorId { get; set; }
         [Required]
         public Guid categoryId { get; set; }
-
-        public virtual ICollection<ArticleVersion> ArticleVersions { set; get; }
-    }
-
-    public class ArticleDBContext : DbContext
-    {
-        public ArticleDBContext() : base("DBConnectionString") { }
-        public DbSet<Article> Articles { get; set; }
-        public DbSet<ArticleVersion> ArticleVersions { get; set; }
+        [ForeignKey("currentVersionId")]
+        public ArticleVersion crrtArticleVersion { set; get; }
+        //public virtual ICollection<ArticleVersion> ArticleVersions { set; get; }
+        [ForeignKey("categoryId")]
+        public Category category { set; get; }
     }
 
 }
