@@ -16,12 +16,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Kiwipedia", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/Article/Index">Articole</a></li>
+                    <li><a href="/Home/Index" style="background-image: url(/Content/App_Resources/Images/Kiwipeda.jpg)"</li>
                     <li>@Html.ActionLink("Despre", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
