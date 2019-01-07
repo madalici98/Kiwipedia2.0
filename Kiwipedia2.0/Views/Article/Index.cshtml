@@ -4,7 +4,7 @@
 
 <nav class="navbar navbar-light bg-light">
 
-    
+
     <form class="form-inline" action="@Url.Action("Search", "Article")" method="get">
         <div class="btn-group">
             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -15,8 +15,8 @@
                 <div class="dropdown-divider"></div>
 
                 @foreach (var category in ViewBag.categories)
-            {
-                    <a class="dropdown-item" style="color: black;" href="/Article/Index/@category">@category</a>
+                {
+                    <a class="dropdown-item" style="color: black;" href="/Article/Index/@category.id">@category.categoryName</a>
                     <div class="dropdown-divider"></div>
                 }
             </div>
@@ -24,12 +24,12 @@
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Ordonati dupa
+                Ordonati
             </button>
             <div class="dropdown-menu">
                 <a class="dropdown-item" style="color: black;" href="/Article/Index/Sort/Old">Vechime</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" style="color: black;" href="/Article/Index/Sort/Alpha">Ordinea alfabetica</a>
+                <a class="dropdown-item" style="color: black;" href="/Article/Index/Sort/Alpha">Alfabetic</a>
                 <div class="dropdown-divider"></div>
             </div>
         </div>

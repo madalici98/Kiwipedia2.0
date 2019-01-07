@@ -204,7 +204,9 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\ArticleVersion.cs" />
+    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -212,6 +214,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\aspnet-Kiwipedia2.0-20181225111218.mdf" />
+    <Content Include="App_Data\KiwipediaDB.mdf" />
+    <Content Include="App_Data\KiwipediaDB_log.ldf">
+      <DependentUpon>KiwipediaDB.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\App_Resources\Images\Kiwipeda.jpg" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />

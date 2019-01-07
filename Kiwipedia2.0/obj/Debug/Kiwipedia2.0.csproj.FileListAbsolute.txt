@@ -113,7 +113,6 @@ C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\bin\Microsoft.AI.Depend
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\bin\Microsoft.AI.Web.xml
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.csprojAssemblyReference.cache
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.csproj.CoreCompileInputs.cache
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.csproj.CopyComplete
 C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.dll
@@ -237,3 +236,4 @@ C:\Users\Andrey\Documents\GitHub\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.
 C:\Users\Andrey\Documents\GitHub\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.csproj.CoreCompileInputs.cache
 C:\Users\Andrey\Documents\GitHub\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.dll
 C:\Users\Andrey\Documents\GitHub\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.pdb
+C:\Users\Madalina\source\repos\Kiwipedia2.0\Kiwipedia2.0\obj\Debug\Kiwipedia2.0.csprojAssemblyReference.cache
