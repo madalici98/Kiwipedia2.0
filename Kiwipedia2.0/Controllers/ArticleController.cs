@@ -95,60 +95,38 @@ namespace Kiwipedia.Controllers
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
-            List<string> categories = new List<string>();
-            /*
-            foreach (Article article in articles)
-            {
-                if (!categories.Contains(article.category))
-                    categories.Add(article.category);
-            }
-
-            categories.Sort();
-
-            List<Article> searchedArticles = new List<Article>();
+            var categories = from category in kdbc.Categories
+                             orderby category.categoryName
+                             select category;
+            
             if (!String.IsNullOrEmpty(search))
             {
-                foreach (Article article in articles)
+                foreach (ArticleData ad in articlesData.ToList())
                 {
-                    if (article.currentVersionId.title.Contains(search))
-                        searchedArticles.Add(article);
+                    if (!ad.articleVersion.title.ToLower().Contains(search.ToLower()))
+                        articlesData.Remove(ad);
                 }
             }
 
-            if (searchedArticles.Count == 0)
+            if (articlesData.Count == 0)
                 ViewBag.title = "Nu a fost gasit niciun articol al carui titlu sa contina \"" + search + "\"";
             else
                 ViewBag.title = "Articole ale caror titluri contin \"" + search + "\"";
 
-            ViewBag.articles = searchedArticles;
+            ViewBag.articles = articlesData;
             ViewBag.categories = categories;
-            return View("Index");*/
-
             return View("Index");
         }
 
         // GET: vizualizarea unui articol
         [Authorize(Roles = "User,Visitor,Editor,Administrator")]
-        public ActionResult Show(int id) //asta ar trebui sa mearga asa
+        public ActionResult Show(Guid id)
         {
-            /*Article[] articles = GetArticles();
-
-            try
-            {
-                ViewBag.article = articles[id];
-                return View();
-            }
-            catch (Exception e)
-            {
-                ViewBag.errorMessage = e.Message;
+            ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
+            if (articleVersion != null)
+                ViewBag.articleVersion = articleVersion;
+            else
                 return View("Error");
-            }*/
-
-            Article article = kdbc.Articles.Find(id);
-            ViewBag.article = article;
-            ArticleVersion articleVersion = kdbc.ArticleVersions.Find(article.currentVersionId);
-            ViewBag.articleVersion = articleVersion;
-
             return View();
         }
 
@@ -236,36 +214,57 @@ namespace Kiwipedia.Controllers
 
         // GET: vrem sa editam un articol
         [Authorize(Roles = "Editor,Administrator")]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            /*Article[] articles = GetArticles();
-
-            try
-            {
-                ViewBag.article = articles[id];
-                return View();
-            }
-            catch (Exception e)
-            {
-                ViewBag.errorMessage = e.Message;
+            ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
+            if (articleVersion != null)
+                ViewBag.articleVersion = articleVersion;
+            else
                 return View("Error");
-            }*/
 
             return View();
         }
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
         [HttpPut]
-        public ActionResult Edit(Article id)
+        public ActionResult Edit(Guid id, string title, string thumbnail, string description, string content)
         {
-            // ... cod udpate articol ...
+            Article article = kdbc.Articles.Find(id);
+            ArticleVersion newArticleVersion = new ArticleVersion();
+
+            newArticleVersion.versionId = Guid.NewGuid();
+            newArticleVersion.articleId = id;
+            newArticleVersion.editorId = article.creatorId;
+            newArticleVersion.title = title;
+            if (thumbnail == "")
+                newArticleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
+            else
+                newArticleVersion.thumbnail = thumbnail;
+            newArticleVersion.description = description;
+            newArticleVersion.content = content;
+            newArticleVersion.creationDate = DateTime.Now;
+
+            article.crrtArticleVersion = newArticleVersion;
+            kdbc.ArticleVersions.Add(newArticleVersion);
+            kdbc.SaveChanges();
+
             return View("EditPutMethod");
         }
 
         [HttpDelete]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            // ... cod stergere articol ...
+            Article article = kdbc.Articles.Find(id);
+
+            IQueryable<ArticleVersion> articleVersions = from av in kdbc.ArticleVersions
+                                                         where av.articleId == id
+                                                         select av;
+
+            kdbc.Articles.Remove(article);
+            foreach (ArticleVersion av in articleVersions)
+                kdbc.ArticleVersions.Remove(av);
+            kdbc.SaveChanges();
+
             return View("DeleteMethod");
         }
 

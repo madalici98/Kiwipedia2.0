@@ -58,8 +58,8 @@
     <br />
     <form method="post" action="/Article/Delete/@article.article.id">
         @Html.HttpMethodOverride(HttpVerbs.Delete)
-        <a class="btn btn-primary" href="/Article/Show/@article.article.id" role="button">Afisare articol</a>
-        <a class="btn btn-warning" href="/Article/Edit/@article.article.id" role="button">Editare articol</a>
+        <a class="btn btn-primary" href="/Article/Show/@article.articleVersion.versionId" role="button">Afisare articol</a>
+        <a class="btn btn-warning" href="/Article/Edit/@article.articleVersion.versionId" role="button">Editare articol</a>
         <button class="btn btn-danger" role="button" type="submit">Stergere articol</button>
     </form>
     <br />
