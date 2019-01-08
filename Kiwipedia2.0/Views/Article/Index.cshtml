@@ -42,9 +42,11 @@
 <br />
 
 @foreach (var article in ViewBag.articles)
-{
-    <h1>@article.articleVersion.title</h1>
-    <a class="btn btn-success" href="/Article/Index/@article.category.categoryName">@article.category.categoryName</a>
+{   
+    <p>
+        <a class="btn btn-success" href="/Article/Index/@article.category.categoryName">@article.category.categoryName</a>
+        <h1>@article.articleVersion.title</h1>
+    </p>
     <br />
     <img src=@article.articleVersion.thumbnail width="100" style="float: left;" />
     <p>@article.articleVersion.description</p>

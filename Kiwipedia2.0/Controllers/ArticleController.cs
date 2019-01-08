@@ -16,6 +16,7 @@ namespace Kiwipedia.Controllers
 
 
         // GET: lista tuturor articolelor + filtru dupa categorii
+        [Authorize(Roles ="User,Visitor,Editor,Administrator")]
         public ActionResult Index(string cat) // category
         {
             List<ArticleData> articlesData = GetArticles();
@@ -63,6 +64,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Sort(string type)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -89,6 +91,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor care au in denumire searchString-ul dat
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -125,6 +128,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vizualizarea unui articol
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Show(int id) //asta ar trebui sa mearga asa
         {
             /*Article[] articles = GetArticles();
@@ -149,6 +153,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: afisam formularul de crearea a unui articol
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New()
         {
             return View();
@@ -156,6 +161,7 @@ namespace Kiwipedia.Controllers
 
         // POST: trimitem datele articolului catre server pentru creare 
         [HttpPost]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New(string title, string category, string thumbnail, string description, string content)
         {
             try
@@ -229,6 +235,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vrem sa editam un articol
+        [Authorize(Roles = "Editor,Administrator")]
         public ActionResult Edit(int id)
         {
             /*Article[] articles = GetArticles();
@@ -271,6 +278,7 @@ namespace Kiwipedia.Controllers
             var articles = from article in kdbc.Articles
                            select article;
 
+            // query-uri mai complexe cu lambda expresii; long live stack overflow <3
             var articleVersions = kdbc.ArticleVersions.GroupBy(av => av.articleId).Select(avs => avs.OrderByDescending(av => av.creationDate).FirstOrDefault());
 
             List<ArticleData> articleData = new List<ArticleData>();
@@ -279,6 +287,7 @@ namespace Kiwipedia.Controllers
             {
                 ArticleData ad = new ArticleData();
                 ad.article = article;
+
                 foreach (ArticleVersion av in articleVersions)
                 {
                     if (av.articleId == article.id)
@@ -287,6 +296,7 @@ namespace Kiwipedia.Controllers
                         break;
                     }
                 }
+
                 foreach (Category c in categories)
                 {
                     if (c.id == article.categoryId)
@@ -295,6 +305,7 @@ namespace Kiwipedia.Controllers
                         break;
                     }
                 }
+
                 articleData.Add(ad);
             }
             return articleData;
