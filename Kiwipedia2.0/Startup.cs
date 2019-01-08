@@ -31,11 +31,22 @@ namespace Kiwipedia2._0
                 role.Name = "Administrator";
                 roleManager.Create(role);
 
-                // se adauga un admin
+                // cont de admin pentru Mada
                 var user = new ApplicationUser();
-                user.UserName = "admin";
-                user.Email = "admin@admin.com";
-                var adminCreated = UserManager.Create(user,"Admin1");
+                user.UserName = "mada";
+                user.Email = "mada@admin.com";
+                var adminCreated = UserManager.Create(user,"Mada");
+
+                if (adminCreated.Succeeded)
+                {
+                    UserManager.AddToRole(user.Id, "Administrator");
+                }
+
+                // cont de admin pentru andrei
+                user = new ApplicationUser();
+                user.UserName = "andrei";
+                user.Email = "andrei@admin.com";
+                adminCreated = UserManager.Create(user, "Andrei");
 
                 if (adminCreated.Succeeded)
                 {

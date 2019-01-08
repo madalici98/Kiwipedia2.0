@@ -12,11 +12,11 @@ namespace Kiwipedia.Controllers
     public class ArticleController : Controller
     {
         //conexiunea cu baza de date
-        private KiwipediaDbContext kdbc = new KiwipediaDbContext();
+        private ApplicationDbContext kdbc = new ApplicationDbContext();
 
 
         // GET: lista tuturor articolelor + filtru dupa categorii
-        [Authorize(Roles ="User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles ="User,Visitor,Editor,Administrator")]
         public ActionResult Index(string cat) // category
         {
             List<ArticleData> articlesData = GetArticles();
@@ -64,7 +64,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Sort(string type)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -91,7 +91,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor care au in denumire searchString-ul dat
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -119,7 +119,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vizualizarea unui articol
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Show(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
@@ -131,7 +131,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: afisam formularul de crearea a unui articol
-        [Authorize(Roles = "User,Editor,Administrator")]
+        //[Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New()
         {
             return View();
@@ -139,7 +139,7 @@ namespace Kiwipedia.Controllers
 
         // POST: trimitem datele articolului catre server pentru creare 
         [HttpPost]
-        [Authorize(Roles = "User,Editor,Administrator")]
+        //[Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New(string title, string category, string thumbnail, string description, string content)
         {
             try
@@ -213,7 +213,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vrem sa editam un articol
-        [Authorize(Roles = "Editor,Administrator")]
+        //[Authorize(Roles = "Editor,Administrator")]
         public ActionResult Edit(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);

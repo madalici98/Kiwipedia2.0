@@ -9,13 +9,13 @@ namespace Kiwipedia2._0.Controllers
 {
     public class HomeController : Controller
     {
-        private KiwipediaDbContext kdbc = new KiwipediaDbContext();
+        private ApplicationDbContext kdbc = new ApplicationDbContext();
 
         public ActionResult Index()
         {
 
             List<ArticleData> articlesData = GetArticles();
-            articlesData.Sort((a1, a2) => a1.articleVersion.creationDate.CompareTo(a2.articleVersion.creationDate));
+            articlesData.Sort((a1, a2) => a1.articleVersion.creationDate.CompareTo(a2.articleVersion.creationDate) * (-1));
             ViewBag.articles = articlesData.Take(6);
 
             return View();

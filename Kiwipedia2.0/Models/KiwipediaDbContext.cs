@@ -6,8 +6,9 @@ using System.Linq;
 using System.Web;
 
 namespace Kiwipedia2._0.Models
-{
-    public class KiwipediaDbContext : DbContext
+{   
+    // no longer needed
+    /*public class KiwipediaDbContext : DbContext
     {
         public KiwipediaDbContext() : base("DBConnectionString")
         {
@@ -23,5 +24,5 @@ namespace Kiwipedia2._0.Models
         {
             modelBuilder.Conventions.Remove<IncludeMetadataConvention>();
         }
-    }
+    }*/
 }
