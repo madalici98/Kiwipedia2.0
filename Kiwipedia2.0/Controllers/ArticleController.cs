@@ -1,4 +1,5 @@
 ﻿using Kiwipedia2._0.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -21,8 +22,8 @@ namespace Kiwipedia.Controllers
         {
             List<ArticleData> articlesData = GetArticles();
 
-            var categories = from category in kdbc.Categories
-                             orderby category.categoryName
+            var categories = from category in kdbc.Categories //kdbc vine de la KiwipediaBataBaseContext 
+                             orderby category.categoryName //(variabila veche; am lasat asa sa nu mai fie nevoie de update peste tot)(variabila veche; am lasat asa sa nu mai fie nevoie de update peste tot)
                              select category;
 
             ViewBag.categories = categories;
@@ -64,7 +65,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
-        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Sort(string type)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -91,7 +92,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor care au in denumire searchString-ul dat
-        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -119,7 +120,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vizualizarea unui articol
-        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Show(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
@@ -131,7 +132,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: afisam formularul de crearea a unui articol
-        //[Authorize(Roles = "User,Editor,Administrator")]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New()
         {
             return View();
@@ -139,14 +140,21 @@ namespace Kiwipedia.Controllers
 
         // POST: trimitem datele articolului catre server pentru creare 
         [HttpPost]
-        //[Authorize(Roles = "User,Editor,Administrator")]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New(string title, string category, string thumbnail, string description, string content)
         {
             try
             {
+                if (User.IsInRole("Visitor"))
+                {
+                    //return View("NoAccess");
+                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui articol care nu va apartine!";
+                    return RedirectToAction("Index");
+                }
+
                 Article article = new Article();
                 article.id = Guid.NewGuid();
-                article.creatorId = Guid.NewGuid();
+                article.creatorId = new Guid(User.Identity.GetUserId());
                 article.creationDate = DateTime.Now;
 
                 IQueryable<Category> categories = from c in kdbc.Categories
@@ -213,7 +221,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vrem sa editam un articol
-        //[Authorize(Roles = "Editor,Administrator")]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Edit(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
@@ -227,6 +235,7 @@ namespace Kiwipedia.Controllers
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
         [HttpPut]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Edit(Guid id, string title, string thumbnail, string description, string content)
         {
             Article article = kdbc.Articles.Find(id);
@@ -252,6 +261,7 @@ namespace Kiwipedia.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Delete(Guid id)
         {
             Article article = kdbc.Articles.Find(id);

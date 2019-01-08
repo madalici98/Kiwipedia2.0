@@ -10,5 +10,6 @@ namespace Kiwipedia2._0.Models
         public Article article { get; set; }
         public ArticleVersion articleVersion { get; set; }
         public Category category { get; set; }
+        public ApplicationUser user { get; set; }
     }
 }
