@@ -19,8 +19,8 @@ namespace Kiwipedia2._0
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            Database.SetInitializer<ArticleDBContext>(new DropCreateDatabaseIfModelChanges<ArticleDBContext>());
-            Database.SetInitializer<CategoryDBContext>(new DropCreateDatabaseIfModelChanges<CategoryDBContext>());
+            Database.SetInitializer<KiwipediaDbContext>(new DropCreateDatabaseIfModelChanges<KiwipediaDbContext>());
+
         }
     }
 }

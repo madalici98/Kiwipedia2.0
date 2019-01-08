@@ -14,10 +14,4 @@ namespace Kiwipedia2._0.Models
         [Required]
         public string categoryName { set; get; }
     }
-
-    public class CategoryDBContext : DbContext
-    {
-        public CategoryDBContext() : base("DBConnectionString") { }
-        public DbSet<Category> Categories { get; set; }
-    }
 }
