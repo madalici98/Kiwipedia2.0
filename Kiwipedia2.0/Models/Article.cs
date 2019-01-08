@@ -10,7 +10,6 @@ namespace Kiwipedia2._0.Models
 {
     public class Article
     {
-        
         [Key]
         public Guid id { get; set; }
         [Required]

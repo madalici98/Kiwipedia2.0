@@ -16,7 +16,7 @@
 
                 @foreach (var category in ViewBag.categories)
                 {
-                    <a class="dropdown-item" style="color: black;" href="/Article/Index/@category.id">@category.categoryName</a>
+                    <a class="dropdown-item" style="color: black;" href="/Article/Index/@category.categoryName">@category.categoryName</a>
                     <div class="dropdown-divider"></div>
                 }
             </div>
@@ -43,19 +43,21 @@
 
 @foreach (var article in ViewBag.articles)
 {
-    <h1>@article.title</h1>
-    <img src=@article.thumbnail width="100" style="float: left;" />
-    <p>@article.description</p>
+    <h1>@article.articleVersion.title</h1>
+    <a class="btn btn-success" href="/Article/Index/@article.category.categoryName">@article.category.categoryName</a>
+    <br />
+    <img src=@article.articleVersion.thumbnail width="100" style="float: left;" />
+    <p>@article.articleVersion.description</p>
 
-    <small>Data creare: @article.creationDate.ToString()</small>
+    <small>Data creare: @article.article.creationDate.ToString()</small>
     <br />
-    <small>Ultima actualizare: @article.latestUpdate.ToString()</small>
+    <small>Ultima actualizare: @article.articleVersion.creationDate.ToString()</small>
     <br />
     <br />
-    <form method="post" action="/Article/Delete/@article.id">
+    <form method="post" action="/Article/Delete/@article.article.id">
         @Html.HttpMethodOverride(HttpVerbs.Delete)
-        <a class="btn btn-primary" href="/Article/Show/@article.id" role="button">Afisare articol</a>
-        <a class="btn btn-warning" href="/Article/Edit/@article.id" role="button">Editare articol</a>
+        <a class="btn btn-primary" href="/Article/Show/@article.article.id" role="button">Afisare articol</a>
+        <a class="btn btn-warning" href="/Article/Edit/@article.article.id" role="button">Editare articol</a>
         <button class="btn btn-danger" role="button" type="submit">Stergere articol</button>
     </form>
     <br />

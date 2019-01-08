@@ -21,8 +21,8 @@ namespace Kiwipedia2._0
 
             routes.MapRoute(
                 name: "Sort",
-                url: "Article/Index/{category}",
-                defaults: new { controller = "Article", action = "Index", category = ""}
+                url: "Article/Index/{cat}",
+                defaults: new { controller = "Article", action = "Index", cat = ""}
             );
 
             routes.MapRoute(

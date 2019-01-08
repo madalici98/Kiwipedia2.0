@@ -1,6 +1,8 @@
 ﻿using Kiwipedia2._0.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,116 +18,72 @@ namespace Kiwipedia.Controllers
         // GET: lista tuturor articolelor + filtru dupa categorii
         public ActionResult Index(string cat) // category
         {
+            List<ArticleData> articlesData = GetArticles();
+
             var categories = from category in kdbc.Categories
+                             orderby category.categoryName
                              select category;
+
             ViewBag.categories = categories;
-            
-            if (cat == null)
-            {
-                var articles = from a in kdbc.Articles
-                               join av in kdbc.ArticleVersions on a.id equals av.versionId
-                               select new
-                               {
-                                   title = av.title,
-                                   description = av.description,
-                                   thumbnail = av.thumbnail,
-                                   creationDate = a.creationDate,
-                                   latestUpdate = av.creationDate,
-                                   articleId = a.id,
-                               };
-                ViewBag.articles = articles;
 
+            if (cat == "")
+            {
                 ViewBag.Title = "Toate articolele";
-                return View();
-            } else
-            {
-                return View("Error");
-            }
-
-
-            /*Article[] articles = GetArticles();
-            List<string> categories = new List<string>();
-
-            foreach (Article article in articles)
-            {
-                if (!categories.Contains(article.category))
-                    categories.Add(article.category);
-            }
-
-            categories.Sort();
-
-            if (category == "")
-            {
-                ViewBag.articles = articles;
-                ViewBag.title = "Toate articolele";
             }
             else
             {
-                List<Article> filteredArticles = new List<Article>();
+                var categoryQuery = from c in kdbc.Categories
+                                    where c.categoryName == cat
+                                    select c;
 
-                foreach (Article article in articles)
+                Category category = new Category();
+
+                foreach(Category c in categoryQuery)
+                    category = c;
+
+                foreach (ArticleData ad in articlesData.ToList())
                 {
-                    if (article.category == category)
-                        filteredArticles.Add(article);
+                    if (ad.article.categoryId != category.id)
+                        articlesData.Remove(ad);
                 }
 
-                if (filteredArticles.Count == 0)
+                if (articlesData.Count() == 0)
                 {
-                    ViewBag.articles = new List<Article>();
-                    ViewBag.title = "Nu exista articole in categoria \"" + category + "\"";
+                    ViewBag.articles = new List<ArticleData>();
+                    ViewBag.title = "Nu exista articole in categoria \"" + cat + "\"";
+                    return View();
                 }
                 else
-                {
-                    ViewBag.articles = filteredArticles;
-                    ViewBag.title = "Articole din categoria \"" + category + "\"";
-                }
+                    ViewBag.title = "Articole din categoria \"" + cat + "\"";
             }
 
-            ViewBag.categories = categories;
-            return View();*/
+            ViewBag.articles = articlesData;
 
-            //return View();
+            return View();
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
         public ActionResult Sort(string type)
-        {   
+        {
+            List<ArticleData> articlesData = GetArticles();
+
+            var categories = from category in kdbc.Categories
+                             orderby category.categoryName
+                             select category;
+
+            ViewBag.categories = categories;
             if (type == "Old")
             {
-                var articles = from article in kdbc.Articles
-                               select article;
-
-            } else
-            {
-
-            }
-
-            /*Article[] articles = GetArticles();
-            List<string> categories = new List<string>();
-
-            foreach (Article article in articles)
-            {
-                if (!categories.Contains(article.category))
-                    categories.Add(article.category);
-            }
-
-            categories.Sort();
-            List<Article> sortedArticles = new List<Article>(articles);
-
-            if (type == "Old")
-            {
-                sortedArticles.Sort((a, b) => a.creationDate.CompareTo(b.creationDate));
-                ViewBag.title = "Toate articolele dupa vechime";
+                ViewBag.title = "Toate articolele sortate dupa vechime";
+                articlesData.Sort((a, b) => a.article.creationDate.CompareTo(b.article.creationDate));
             }
             else
             {
-                sortedArticles.Sort((a, b) => a.currentVersionId.title.CompareTo(b.currentVersionId.title));
-                ViewBag.title = "Toate articolele in ordinea alfabetica";
+                ViewBag.title = "Toate articolele sortate dupa ordinea alfabetica";
+                articlesData.Sort((a, b) => a.articleVersion.title.CompareTo(b.articleVersion.title));
             }
 
-            ViewBag.articles = sortedArticles;
-            ViewBag.categories = categories;
-            return View("Index");*/
+            ViewBag.articles = articlesData;
 
             return View("Index");
         }
@@ -133,9 +91,9 @@ namespace Kiwipedia.Controllers
         // GET: lista articolelor care au in denumire searchString-ul dat
         public ActionResult Search(string search)
         {
-            /*Article[] articles = GetArticles();
+            List<ArticleData> articlesData = GetArticles();
             List<string> categories = new List<string>();
-
+            /*
             foreach (Article article in articles)
             {
                 if (!categories.Contains(article.category))
@@ -200,41 +158,72 @@ namespace Kiwipedia.Controllers
         [HttpPost]
         public ActionResult New(string title, string category, string thumbnail, string description, string content)
         {
-            // ... cod creare articol ...
-            Article article = new Article();
-            article.id = Guid.NewGuid();
-            article.creatorId = Guid.NewGuid();
-            article.creationDate = DateTime.Now;
+            try
+            {
+                Article article = new Article();
+                article.id = Guid.NewGuid();
+                article.creatorId = Guid.NewGuid();
+                article.creationDate = DateTime.Now;
 
-            Category cat = new Category();
-            cat.id = Guid.NewGuid();
-            cat.categoryName = category;
-            article.category = cat;
+                IQueryable<Category> categories = from c in kdbc.Categories
+                                                  select c;
 
-            ArticleVersion articleVersion = new ArticleVersion();
-            articleVersion.articleId = article.id;
-            articleVersion.versionId = Guid.NewGuid();
-            articleVersion.editorId = article.creatorId;
-            articleVersion.creationDate = article.creationDate;
-            articleVersion.title = title;
+                Category cat = new Category();
+                bool found = false;
+                foreach (Category c in categories)
+                {
+                    if (c.categoryName == category)
+                    {
+                        cat = c;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    cat.id = Guid.NewGuid();
+                    cat.categoryName = category;
+                }
+                article.category = cat;
 
-            if (thumbnail == "")
-                articleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
-            else
-                articleVersion.thumbnail = thumbnail;
+                ArticleVersion articleVersion = new ArticleVersion();
+                articleVersion.articleId = article.id;
+                articleVersion.versionId = Guid.NewGuid();
+                articleVersion.editorId = article.creatorId;
+                articleVersion.creationDate = article.creationDate;
+                articleVersion.title = title;
 
-            articleVersion.description = description;
-            articleVersion.content = content;
-            article.crrtArticleVersion = articleVersion;
+                if (thumbnail == "")
+                    articleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
+                else
+                    articleVersion.thumbnail = thumbnail;
 
-            kdbc.Articles.Add(article);
-            //kdbc.ArticleVersions.Add(articleVersion);
-            //kdbc.Categories.Add(cat);
+                articleVersion.description = description;
+                articleVersion.content = content;
+                article.crrtArticleVersion = articleVersion;
 
-            kdbc.SaveChanges();
+                kdbc.Articles.Add(article);
+                //kdbc.ArticleVersions.Add(articleVersion);
+                //kdbc.Categories.Add(cat);
+
+                kdbc.SaveChanges();
+            }
             //dbArticleVersion.SaveChanges();
             //dbCategories.SaveChanges();
-            
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Debug.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Debug.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
 
             return View("NewPostMethod");
         }
@@ -271,6 +260,44 @@ namespace Kiwipedia.Controllers
         {
             // ... cod stergere articol ...
             return View("DeleteMethod");
+        }
+
+        [NonAction]
+        private List<ArticleData> GetArticles()
+        {
+            var categories = from category in kdbc.Categories
+                             select category;
+
+            var articles = from article in kdbc.Articles
+                           select article;
+
+            var articleVersions = kdbc.ArticleVersions.GroupBy(av => av.articleId).Select(avs => avs.OrderByDescending(av => av.creationDate).FirstOrDefault());
+
+            List<ArticleData> articleData = new List<ArticleData>();
+
+            foreach (Article article in articles)
+            {
+                ArticleData ad = new ArticleData();
+                ad.article = article;
+                foreach (ArticleVersion av in articleVersions)
+                {
+                    if (av.articleId == article.id)
+                    {
+                        ad.articleVersion = av;
+                        break;
+                    }
+                }
+                foreach (Category c in categories)
+                {
+                    if (c.id == article.categoryId)
+                    {
+                        ad.category = c;
+                        break;
+                    }
+                }
+                articleData.Add(ad);
+            }
+            return articleData;
         }
 
         /*
