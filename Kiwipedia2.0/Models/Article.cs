@@ -10,21 +10,27 @@ namespace Kiwipedia2._0.Models
 {
     public class Article
     {
-        
         [Key]
-        public Guid id { get; set; }
-        [Required]
-        public Guid currentVersionId { get; set; }
+        public Guid articleId { get; set; }
         public DateTime creationDate { get; set; }
         [Required]
         public Guid creatorId { get; set; }
         [Required]
         public Guid categoryId { get; set; }
-        [ForeignKey("currentVersionId")]
-        public ArticleVersion crrtArticleVersion { set; get; }
-        //public virtual ICollection<ArticleVersion> ArticleVersions { set; get; }
+        [Required]
+        public string title { get; set; }
+        public string description { get; set; }
+        public string thumbnail { get; set; }
+        [Required]
+        public string content { get; set; }
+        public DateTime latestEdit { get; set; }
+
         [ForeignKey("categoryId")]
-        public Category category { set; get; }
+        public virtual Category Category { set; get; }
+
+        /*[ForeignKey("versionId")]
+        public virtual ArticleVersion crrtArticleVersion { set; get; }
+        public virtual ICollection<ArticleVersion> ArticleVersions { set; get; }*/
     }
 
 }

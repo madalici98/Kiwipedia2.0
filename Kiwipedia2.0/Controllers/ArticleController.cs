@@ -22,21 +22,14 @@ namespace Kiwipedia.Controllers
             
             if (cat == null)
             {
-                var articles = from a in kdbc.Articles
-                               join av in kdbc.ArticleVersions on a.id equals av.versionId
-                               select new
-                               {
-                                   title = av.title,
-                                   description = av.description,
-                                   thumbnail = av.thumbnail,
-                                   creationDate = a.creationDate,
-                                   latestUpdate = av.creationDate,
-                                   articleId = a.id,
-                               };
+                //var articles = kdbc.Articles.Include("ArticleVersion");
+                var articles = from article in kdbc.Articles
+                               select article;
                 ViewBag.articles = articles;
 
                 ViewBag.Title = "Toate articolele";
                 return View();
+
             } else
             {
                 return View("Error");
@@ -184,8 +177,6 @@ namespace Kiwipedia.Controllers
 
             Article article = kdbc.Articles.Find(id);
             ViewBag.article = article;
-            ArticleVersion articleVersion = kdbc.ArticleVersions.Find(article.currentVersionId);
-            ViewBag.articleVersion = articleVersion;
 
             return View();
         }
@@ -202,30 +193,26 @@ namespace Kiwipedia.Controllers
         {
             // ... cod creare articol ...
             Article article = new Article();
-            article.id = Guid.NewGuid();
+            article.articleId = Guid.NewGuid();
             article.creatorId = Guid.NewGuid();
+
             article.creationDate = DateTime.Now;
+            article.latestEdit = DateTime.Now;
 
             Category cat = new Category();
-            cat.id = Guid.NewGuid();
+            cat.categoryId = Guid.NewGuid();
             cat.categoryName = category;
-            article.category = cat;
+            article.Category = cat;
 
-            ArticleVersion articleVersion = new ArticleVersion();
-            articleVersion.articleId = article.id;
-            articleVersion.versionId = Guid.NewGuid();
-            articleVersion.editorId = article.creatorId;
-            articleVersion.creationDate = article.creationDate;
-            articleVersion.title = title;
+            article.title = title;
 
             if (thumbnail == "")
-                articleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
+                article.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
             else
-                articleVersion.thumbnail = thumbnail;
+                article.thumbnail = thumbnail;
 
-            articleVersion.description = description;
-            articleVersion.content = content;
-            article.crrtArticleVersion = articleVersion;
+            article.description = description;
+            article.content = content;
 
             kdbc.Articles.Add(article);
             //kdbc.ArticleVersions.Add(articleVersion);

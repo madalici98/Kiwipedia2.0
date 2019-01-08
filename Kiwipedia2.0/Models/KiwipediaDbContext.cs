@@ -15,13 +15,13 @@ namespace Kiwipedia2._0.Models
         }
 
         public DbSet<Article> Articles { get; set; }
-        public DbSet<ArticleVersion> ArticleVersions { get; set; }
+        //public DbSet<ArticleVersion> ArticleVersions { get; set; }
         public DbSet<Category> Categories { set; get; }
-        public DbSet<Image> Images { get; set; }
+        //public DbSet<Image> Images { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        /*protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<IncludeMetadataConvention>();
-        }
+        }*/
     }
 }
