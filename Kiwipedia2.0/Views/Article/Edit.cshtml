@@ -4,17 +4,21 @@
 }
 
 <h2>Editeaza articolul</h2>
-<form method="post" action="/Article/Edit/@ViewBag.id" style="width: 80%">
+<form method="post" action="/Article/Edit/@ViewBag.articleVersion.articleId" style="width: 80%">
     @Html.HttpMethodOverride(HttpVerbs.Put)
     <br />
     <h4>Titlu</h4>
-    <textarea name="title" style="max-width: 30%; width:30%">@ViewBag.article.currentVersionId.title</textarea>
+    <textarea name="title" style="max-width: 30%; width:30%">@ViewBag.articleVersion.title</textarea>
+    <br />
+    <h4>Imagine</h4>
+    <textarea name="thumbnail" style="max-width: 30%; width:30%"></textarea>
+    <button class="btn btn-primary" type="button"> Browse </button>
     <br />
     <h4>Descriere</h4>
-    <textarea name="description" style="max-width: 80%; width:80%">@ViewBag.article.currentVersionId.description</textarea>
+    <textarea name="description" style="max-width: 80%; width:80%">@ViewBag.articleVersion.description</textarea>
     <br />
     <h4>Continut</h4>
-    <textarea name="content" style="max-width: 80%; width:80%; height: 800px">@ViewBag.article.currentVersionId.content</textarea>
+    <textarea name="content" style="max-width: 80%; width:80%; height: 800px">@ViewBag.articleVersion.content</textarea>
     <br />
     <button type="submit" class="btn btn-success">Modifica articolul</button>
     <a class="btn btn-danger" href="/Article/Index" role="button" style="margin-left: 10%">Anulare</a>
