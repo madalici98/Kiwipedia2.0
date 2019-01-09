@@ -155,7 +155,7 @@ namespace Kiwipedia.Controllers
         // POST: trimitem datele articolului catre server pentru creare 
         [HttpPost]
         //[Authorize(Roles = "User,Editor,Administrator")]
-        public ActionResult New([Bind(Include = "title, category, thumbnail, description, content")]NewArticleData newArticleData)
+        public ActionResult New(NewArticleData newArticleData)
         {
             try
             {
@@ -245,31 +245,30 @@ namespace Kiwipedia.Controllers
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
             if (articleVersion != null)
-                ViewBag.articleVersion = articleVersion;
+                return View(articleVersion);
             else
                 return View("Error");
-
-            return View();
         }
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
         [HttpPut]
-        //[Authorize(Roles = "User,Editor,Administrator")]
+        [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Edit(Guid id, string title, string thumbnail, string description, string content)
         {
-            Article article = kdbc.Articles.Find(id);
+            Article article = kdbc.Articles.Find(articleVersion.articleId);
             ArticleVersion newArticleVersion = new ArticleVersion();
 
+            var ceva = articleVersion.versionId;
             newArticleVersion.versionId = Guid.NewGuid();
-            newArticleVersion.articleId = id;
+            newArticleVersion.articleId = article.id;
             newArticleVersion.editorId = new Guid(User.Identity.GetUserId());
-            newArticleVersion.title = title;
-            if (thumbnail == "")
+            newArticleVersion.title = articleVersion.title;
+            if (articleVersion.thumbnail == "")
                 newArticleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
             else
-                newArticleVersion.thumbnail = thumbnail;
-            newArticleVersion.description = description;
-            newArticleVersion.content = content;
+                newArticleVersion.thumbnail = articleVersion.thumbnail;
+            newArticleVersion.description = articleVersion.description;
+            newArticleVersion.content = articleVersion.content;
             newArticleVersion.creationDate = DateTime.Now;
 
             article.crrtArticleVersion = newArticleVersion;

@@ -10,10 +10,10 @@ namespace Kiwipedia2._0.Models
     public class ArticleVersion
     {   
         [Key]
-        public Guid versionId { set; get; }
+        public Guid versionId { get; set; }
         [Required]
-        public Guid articleId { set; get; }
-        public Guid editorId { set; get; } // a user
+        public Guid articleId { get; set; }
+        public Guid editorId { get; set; } 
         public string title { get; set; }
         public string description { get; set; }
         public string thumbnail { get; set; }
