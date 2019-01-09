@@ -20,6 +20,8 @@ namespace Kiwipedia.Controllers
         //[Authorize(Roles ="User,Visitor,Editor,Administrator")]
         public ActionResult Index(string cat) // category
         {
+            //
+
             List<ArticleData> articlesData = GetArticles();
 
             var categories = from category in kdbc.Categories //kdbc vine de la KiwipediaBataBaseContext 
@@ -65,7 +67,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Sort(string type)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -92,7 +94,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor care au in denumire searchString-ul dat
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -120,7 +122,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vizualizarea unui articol
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Show(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
