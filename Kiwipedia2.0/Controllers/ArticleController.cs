@@ -65,7 +65,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor sortate dupa vechime sau ordine alfabetica
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Sort(string type)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -92,7 +92,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: lista articolelor care au in denumire searchString-ul dat
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Search(string search)
         {
             List<ArticleData> articlesData = GetArticles();
@@ -120,7 +120,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vizualizarea unui articol
-        [Authorize(Roles = "User,Visitor,Editor,Administrator")]
+        //[Authorize(Roles = "User,Visitor,Editor,Administrator")]
         public ActionResult Show(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
@@ -140,70 +140,80 @@ namespace Kiwipedia.Controllers
         [Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New()
         {
+            if (User.IsInRole("Visitor"))
+            {
+                //return View("NoAccess");
+                TempData["message"] = "Nu aveti dreptul sa creati articole noi!";
+                return RedirectToAction("Index");
+            }
+
             return View();
         }
 
         // POST: trimitem datele articolului catre server pentru creare 
         [HttpPost]
-        [Authorize(Roles = "User,Editor,Administrator")]
-        public ActionResult New(string title, string category, string thumbnail, string description, string content)
+        //[Authorize(Roles = "User,Editor,Administrator")]
+        public ActionResult New([Bind(Include = "title, category, thumbnail, description, content")]NewArticleData newArticleData)
         {
             try
             {
-                if (User.IsInRole("Visitor"))
+                if (ModelState.IsValid)
                 {
-                    //return View("NoAccess");
-                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui articol care nu va apartine!";
-                    return RedirectToAction("Index");
-                }
+                    Article article = new Article();
+                    article.id = Guid.NewGuid();
+                    article.creatorId = new Guid(User.Identity.GetUserId());
+                    article.creationDate = DateTime.Now;
 
-                Article article = new Article();
-                article.id = Guid.NewGuid();
-                article.creatorId = new Guid(User.Identity.GetUserId());
-                article.creationDate = DateTime.Now;
+                    IQueryable<Category> categories = from c in kdbc.Categories
+                                                      select c;
 
-                IQueryable<Category> categories = from c in kdbc.Categories
-                                                  select c;
-
-                Category cat = new Category();
-                bool found = false;
-                foreach (Category c in categories)
-                {
-                    if (c.categoryName == category)
+                    Category cat = new Category();
+                    bool found = false;
+                    foreach (Category c in categories)
                     {
-                        cat = c;
-                        found = true;
-                        break;
+                        if (c.categoryName == newArticleData.category)
+                        {
+                            cat = c;
+                            found = true;
+                            break;
+                        }
                     }
-                }
-                if (!found)
-                {
-                    cat.id = Guid.NewGuid();
-                    cat.categoryName = category;
-                }
-                article.category = cat;
+                    if (!found)
+                    {
+                        cat.id = Guid.NewGuid();
+                        cat.categoryName = newArticleData.category;
+                    }
+                    article.category = cat;
 
-                ArticleVersion articleVersion = new ArticleVersion();
-                articleVersion.articleId = article.id;
-                articleVersion.versionId = Guid.NewGuid();
-                articleVersion.editorId = article.creatorId;
-                articleVersion.creationDate = article.creationDate;
-                articleVersion.title = title;
+                    ArticleVersion articleVersion = new ArticleVersion();
+                    articleVersion.articleId = article.id;
+                    articleVersion.versionId = Guid.NewGuid();
+                    articleVersion.editorId = article.creatorId;
+                    articleVersion.creationDate = article.creationDate;
+                    articleVersion.title = newArticleData.title;
 
-                if (thumbnail == "")
-                    articleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
+                    if (newArticleData.thumbnail == null)
+                        articleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
+                    else
+                        articleVersion.thumbnail = newArticleData.thumbnail;
+
+                    articleVersion.description = newArticleData.description;
+                    articleVersion.content = newArticleData.content;
+                    article.crrtArticleVersion = articleVersion;
+
+                    kdbc.Articles.Add(article);
+                    //kdbc.ArticleVersions.Add(articleVersion);
+                    //kdbc.Categories.Add(cat);
+
+                    kdbc.SaveChanges();
+
+                    return View("NewPostMethod");
+                }
                 else
-                    articleVersion.thumbnail = thumbnail;
-
-                articleVersion.description = description;
-                articleVersion.content = content;
-                article.crrtArticleVersion = articleVersion;
-
-                kdbc.Articles.Add(article);
-                //kdbc.ArticleVersions.Add(articleVersion);
-                //kdbc.Categories.Add(cat);
-
-                kdbc.SaveChanges();
+                {
+                    ViewBag.Title = "Datele de intrare sunt invalide!";
+                    return View("Error");
+                }
             }
             //dbArticleVersion.SaveChanges();
             //dbCategories.SaveChanges();
@@ -221,8 +231,10 @@ namespace Kiwipedia.Controllers
                 }
                 throw;
             }
-
-            return View("NewPostMethod");
+            catch (Exception e)
+            {
+                return View("Error");
+            }
         }
 
         // GET: vrem sa editam un articol
@@ -248,7 +260,7 @@ namespace Kiwipedia.Controllers
 
             newArticleVersion.versionId = Guid.NewGuid();
             newArticleVersion.articleId = id;
-            newArticleVersion.editorId = article.creatorId;
+            newArticleVersion.editorId = new Guid(User.Identity.GetUserId());
             newArticleVersion.title = title;
             if (thumbnail == "")
                 newArticleVersion.thumbnail = "/Content/App_Resources/Images/Kiwipeda.jpg";
@@ -271,6 +283,13 @@ namespace Kiwipedia.Controllers
         {
             Article article = kdbc.Articles.Find(id);
 
+            if (User.IsInRole("User") && new Guid(User.Identity.GetUserId()) != article.creatorId)
+            {
+                //return View("NoAccess");
+                TempData["message"] = "Nu aveti dreptul sa stergeti articole care nu va apartin!";
+                return RedirectToAction("Index");
+            }
+
             IQueryable<ArticleVersion> articleVersions = from av in kdbc.ArticleVersions
                                                          where av.articleId == id
                                                          select av;
@@ -283,10 +302,18 @@ namespace Kiwipedia.Controllers
             return View("DeleteMethod");
         }
 
+        [Authorize(Roles = "User,Editor,Administrator")]
         [HttpPut]
         public ActionResult Rollback(Guid articleId)
         {
             Article article = kdbc.Articles.Find(articleId);
+
+            if (User.IsInRole("User") && new Guid(User.Identity.GetUserId()) != article.creatorId)
+            {
+                //return View("NoAccess");
+                TempData["message"] = "Nu aveti dreptul sa derulati schimbarile la articole care nu va apartin!";
+                return RedirectToAction("Index");
+            }
 
             IQueryable<ArticleVersion> articleVersions = from av in kdbc.ArticleVersions
                                                          where av.articleId == articleId
