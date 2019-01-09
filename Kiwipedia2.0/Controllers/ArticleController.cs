@@ -139,7 +139,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: afisam formularul de crearea a unui articol
-        [Authorize(Roles = "User,Editor,Administrator")]
+        //[Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult New()
         {
             if (User.IsInRole("Visitor"))
@@ -240,7 +240,7 @@ namespace Kiwipedia.Controllers
         }
 
         // GET: vrem sa editam un articol
-        [Authorize(Roles = "User,Editor,Administrator")]
+        //[Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Edit(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
@@ -254,7 +254,7 @@ namespace Kiwipedia.Controllers
 
         // PUT: vrem sa trimitem modificaile la server si sa le salvam
         [HttpPut]
-        [Authorize(Roles = "User,Editor,Administrator")]
+        //[Authorize(Roles = "User,Editor,Administrator")]
         public ActionResult Edit(Guid id, string title, string thumbnail, string description, string content)
         {
             Article article = kdbc.Articles.Find(id);
