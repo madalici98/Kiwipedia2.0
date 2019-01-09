@@ -26,6 +26,12 @@ namespace Kiwipedia2._0
             );
 
             routes.MapRoute(
+                name: "Rollback",
+                url: "Article/Rollback/{articleId}",
+                defaults: new { controller = "Article", action = "Rollback", articleId = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

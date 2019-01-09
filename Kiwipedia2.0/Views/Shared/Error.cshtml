@@ -1,9 +1,12 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
-    ViewBag.Title = "Error";
+    if (ViewBag.Title == null)
+    {
+        ViewBag.Title = "Error";
+    }
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h1 class="text-danger">@ViewBag.Title</h1>
+<h2 class="text-danger">O eroare a aparut in urma actiunii inregistrate.</h2>
 
