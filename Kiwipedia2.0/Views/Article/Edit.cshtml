@@ -3,23 +3,36 @@
     ViewBag.Title = "Editare articol";
 }
 
-<h2>Editeaza articolul</h2>
-<form method="post" action="/Article/Edit/@ViewBag.articleVersion.articleId" style="width: 80%">
+<h2>@ViewBag.Title</h2>
+@model Kiwipedia2._0.Models.ArticleVersion
+@using (Html.BeginForm("Edit", "Article", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
     @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.HiddenFor(a => a.articleId)
+    @Html.HiddenFor(a => a.versionId)
+    @Html.AntiForgeryToken()
     <br />
-    <h4>Titlu</h4>
-    <textarea name="title" style="max-width: 30%; width:30%">@ViewBag.articleVersion.title</textarea>
+    @Html.Label("title", "Titlu")
     <br />
-    <h4>Imagine</h4>
-    <textarea name="thumbnail" style="max-width: 30%; width:30%"></textarea>
-    <button class="btn btn-primary" type="button"> Browse </button>
+    @Html.TextAreaFor(a => a.title, new { @class = "form-control" })
+    @Html.ValidationMessageFor(a => a.title, "Titlul este obligatoriu", new { @class = "text-danger" })
     <br />
-    <h4>Descriere</h4>
-    <textarea name="description" style="max-width: 80%; width:80%">@ViewBag.articleVersion.description</textarea>
+    @Html.Label("thumbnail", "Imagine")
     <br />
-    <h4>Continut</h4>
-    <textarea name="content" style="max-width: 80%; width:80%; height: 800px">@ViewBag.articleVersion.content</textarea>
+    @Html.TextAreaFor(a => a.thumbnail, new { @class = "form-control" })
     <br />
-    <button type="submit" class="btn btn-success">Modifica articolul</button>
+    @Html.Label("description", "Descriere")
+    <br />
+    @Html.TextAreaFor(a => a.description, new { @class = "form-control", @style = "min-width: 30%; min-height: 10%;" })
+    @Html.ValidationMessageFor(a => a.description, "Descrierea este obligatorie", new { @class = "text-danger" })
+    <br />
+    @Html.Label("content", "Continut")
+    <br />
+    @Html.TextAreaFor(a => a.content, new { @class = "form-control", @style = "min-width: 600px; height: 200px;" })
+    @Html.ValidationMessageFor(a => a.content, "Articolul nu poate fi lasat gol", new { @class = "text-danger" })
+    <br />
+    <br />
+    <button type="submit" class="btn btn-primary">Adauga</button>
     <a class="btn btn-danger" href="/Article/Index" role="button" style="margin-left: 10%">Anulare</a>
-</form>
+}
+<br />
