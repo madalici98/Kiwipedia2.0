@@ -15,7 +15,7 @@ namespace Kiwipedia2._0.Controllers
         {
 
             List<ArticleData> articlesData = GetArticles();
-            articlesData.Sort((a1, a2) => a1.articleVersion.creationDate.CompareTo(a2.articleVersion.creationDate) * (-1));
+            articlesData.Sort((a1, a2) => a1.articleVersion.creationDate.CompareTo(a2.articleVersion.creationDate) * (-1)); //soartare descrescatoare
             ViewBag.articles = articlesData.Take(6);
 
             return View();
