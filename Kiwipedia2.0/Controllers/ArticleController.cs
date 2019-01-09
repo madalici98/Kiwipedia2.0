@@ -123,10 +123,15 @@ namespace Kiwipedia.Controllers
         public ActionResult Show(Guid id)
         {
             ArticleVersion articleVersion = kdbc.ArticleVersions.Find(id);
+
             if (articleVersion != null)
                 ViewBag.articleVersion = articleVersion;
             else
                 return View("Error");
+
+            Article article = kdbc.Articles.Find(articleVersion.articleId);
+            ViewBag.article = article;
+
             return View();
         }
 
@@ -266,6 +271,39 @@ namespace Kiwipedia.Controllers
             kdbc.SaveChanges();
 
             return View("DeleteMethod");
+        }
+
+        [HttpPut]
+        public ActionResult Rollback(Guid articleId)
+        {
+            Article article = kdbc.Articles.Find(articleId);
+
+            IQueryable<ArticleVersion> articleVersions = from av in kdbc.ArticleVersions
+                                                         where av.articleId == articleId
+                                                         orderby av.creationDate descending
+                                                         select av;
+            if(articleVersions.Count() < 2)
+            {
+                ViewBag.title = "Nu s-au putut derula schimbarile. Exista o singura versiune a acestui articol.";
+                return View("RollbackMethod");
+            }
+            
+            ArticleVersion oldArticleVersion = articleVersions.First();
+
+
+            articleVersions = from av in kdbc.ArticleVersions
+                              where av.articleId == articleId && av.versionId != oldArticleVersion.versionId
+                              orderby av.creationDate descending
+                              select av;
+
+            ArticleVersion newArticleVersion = articleVersions.First();
+            article.crrtArticleVersion = newArticleVersion;
+
+            kdbc.ArticleVersions.Remove(oldArticleVersion);
+            kdbc.SaveChanges();
+
+            ViewBag.title = "Schimbarile au fost derulate cu succes.";
+            return View("RollbackMethod");
         }
 
         [NonAction]

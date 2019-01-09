@@ -286,6 +286,7 @@
     <Content Include="Views\Article\New.cshtml" />
     <Content Include="Views\Article\NewPostMethod.cshtml" />
     <Content Include="Views\Article\Show.cshtml" />
+    <Content Include="Views\Article\RollbackMethod.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

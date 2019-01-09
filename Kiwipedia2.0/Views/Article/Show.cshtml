@@ -6,6 +6,16 @@
 <p>@ViewBag.articleVersion.content</p>
 
 <br />
-<a class="btn btn-primary" href="/Article/Index" role="button">Inapoi la articole</a>
+
+    <a class="btn btn-primary" href="/Article/Index" role="button" style="float:left;">Inapoi la articole</a>
+    <a class="btn btn-warning" href="/Article/Edit/@ViewBag.articleVersion.versionId" style="float:left; margin-left:1%;">Editare articol</a>
+    <form method="post" action="/Article/Rollback/@ViewBag.article.id" style="float:left; margin-left:1%;">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+        <button class="btn btn-warning" role="button" type="submit">Derulare schimbari</button>
+    </form>
+    <form method="post" action="/Article/Delete/@ViewBag.article.id" style="float:left; margin-left:1%;">
+        @Html.HttpMethodOverride(HttpVerbs.Delete)
+        <button class="btn btn-danger" role="button" type="submit">Stergere articol</button>
+    </form>
 <br />
 

@@ -11,25 +11,24 @@
 <div class="row">
     @foreach (var article in ViewBag.articles)
     {
-    <div class="col-md-4">
-        <p>
-            <a class="btn btn-success" href="/Article/Index/@article.category.categoryName">@article.category.categoryName</a>
-            <h1>@article.articleVersion.title</h1>
-        </p>
-        <br />
-        <img src=@article.articleVersion.thumbnail width="100" style="float: left;" />
-        <p>@article.articleVersion.description</p>
+        <div class="col-md-4">
+            <p>
+                <a class="btn btn-success" href="/Article/Index/@article.category.categoryName">@article.category.categoryName</a>
+                <h1>@article.articleVersion.title</h1>
+            </p>
+            <br />
+            <img src=@article.articleVersion.thumbnail width="100" style="float: left;" />
+            <p>@article.articleVersion.description</p>
 
-        <small>Data creare: @article.article.creationDate.ToString()</small>
-        <br />
-        <small>Ultima actualizare: @article.articleVersion.creationDate.ToString()</small>
-        <br />
-        <br />
-        <form method="post" action="/Article/Delete/@article.article.id">
-            <a class="btn btn-primary" href="/Article/Show/@article.article.id" role="button">Afisare articol</a>
-        </form>
-        <br />
-    </div>
+            <small>Data creare: @article.article.creationDate.ToString()</small>
+            <br />
+            <small>Ultima actualizare: @article.articleVersion.creationDate.ToString()</small>
+            <br />
+            <br />
+            <a class="btn btn-primary" href="/Article/Show/@article.articleVersion.versionId" role="button">Afisare articol</a>
+            <br />
+            <br />
+        </div>
     }
 </div>
 
